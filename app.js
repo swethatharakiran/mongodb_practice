@@ -8,11 +8,11 @@ const errorController = require('./controllers/error');
 const mongoconnect=require('./util/database').mongoconnect;
 //const sequelize = require('./util/database');
 //const Product = require('./models/product');
-//const User = require('./models/user');
+const User = require('./models/user');
 //const Cart = require('./models/cart');
 //const CartItem = require('./models/cart-item');
 //const Order = require('./models/order');
-//const OrderItem = require('./models/order-item');
+//const OrderItem = require('./models/order-item');// accessed from mongodb db not sql
 
 const app = express();
 
@@ -26,13 +26,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  //User.findById(1)
-    //.then(user => {
-      //req.user = user;
-      //next();
-    //})
-    //.catch(err => console.log(err));
-    next();
+  User.findById('63e13dddd50070b7c0055514')
+    .then(user => {
+      req.user = user;
+      console.log("HEREEEEE",user);
+      next();
+    })
+    .catch(err => console.log(err));
+    
 });
 
 app.use('/admin', adminRoutes);
