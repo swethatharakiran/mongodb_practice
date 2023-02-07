@@ -1,5 +1,5 @@
 const mongodb=require('mongodb');
-const getDb=require('../util/database').getDb;
+/*const getDb=require('../util/database').getDb;
 
 
 class User {
@@ -110,4 +110,4 @@ class User {
 }
 
 
-module.exports = User;
+module.exports = User;*/
