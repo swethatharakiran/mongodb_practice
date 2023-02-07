@@ -9,7 +9,7 @@ const errorController = require('./controllers/error');
 //const mongoconnect=require('./util/database').mongoconnect;
 //const sequelize = require('./util/database');
 //const Product = require('./models/product');
-//const User = require('./models/user');
+const User = require('./models/user');
 //const Cart = require('./models/cart');
 //const CartItem = require('./models/cart-item');
 //const Order = require('./models/order');
@@ -26,16 +26,16 @@ const shopRoutes = require('./routes/shop');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-/*app.use((req, res, next) => {
-  User.findById('63e13dddd50070b7c0055514')
+app.use((req, res, next) => {
+  User.findById('63e23d95769e133ca4d7f2bf')
     .then(user => {
-      req.user = new User(user.username,user.email,user.cart,user._id);
+      req.user = user;
       console.log("HEREEEEE",user);
       next();
     })
     .catch(err => console.log(err));
     
-});*/
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -78,5 +78,18 @@ sequelize
 
 mongoose.connect('mongodb+srv://swethakh:switchcareer1@cluster0.ovg1ccy.mongodb.net/shop?retryWrites=true&w=majority')
 .then(result=>{
+  User.findOne().then(user=>{
+    if(!user){
+      const user=new User({
+        username:'swetha',
+        email:'swetha@gmail.com',
+        cart:{
+          items:[]
+        }
+      });
+      user.save();
+    }
+  })
+ 
   app.listen(3000);
 }).catch(err=>{console.log(err)});
