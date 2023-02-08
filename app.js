@@ -2,18 +2,10 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 
 const errorController = require('./controllers/error');
-
-//const mongoconnect=require('./util/database').mongoconnect;
-//const sequelize = require('./util/database');
-//const Product = require('./models/product');
 const User = require('./models/user');
-//const Cart = require('./models/cart');
-//const CartItem = require('./models/cart-item');
-//const Order = require('./models/order');
-//const OrderItem = require('./models/order-item');// accessed from mongodb db not sql
 
 const app = express();
 
@@ -27,14 +19,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('63e23d95769e133ca4d7f2bf')
+  User.findById('63e35d2fdfd7e8279c273cc6')
     .then(user => {
       req.user = user;
-      console.log("HEREEEEE",user);
       next();
     })
     .catch(err => console.log(err));
-    
 });
 
 app.use('/admin', adminRoutes);
@@ -42,54 +32,25 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-/*Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-User.hasMany(Product);
-User.hasOne(Cart);
-Cart.belongsTo(User);
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product, { through: OrderItem });
-
-sequelize
-  // .sync({ force: true })
-  .sync()
+mongoose
+  .connect(
+    'mongodb+srv://swethakh:switchcareer1@cluster0.ovg1ccy.mongodb.net/shop2?retryWrites=true&w=majority'
+  )
   .then(result => {
-    return User.findById(1);
-    // console.log(result);
-  })
-  .then(user => {
-    if (!user) {
-      return User.create({ name: 'Max', email: 'test@test.com' });
-    }
-    return user;
-  })
-  .then(user => {
-    // console.log(user);
-    return user.createCart();
-  })
-  .then(cart => {
+    User.findOne().then(user => {
+      if (!user) {
+        const user = new User({
+          name: 'swetha',
+          email: 'swetha@gmail.com',
+          cart: {
+            items: []
+          }
+        });
+        user.save();
+      }
+    });
     app.listen(3000);
   })
   .catch(err => {
     console.log(err);
-  });*/
-
-mongoose.connect('mongodb+srv://swethakh:switchcareer1@cluster0.ovg1ccy.mongodb.net/shop?retryWrites=true&w=majority')
-.then(result=>{
-  User.findOne().then(user=>{
-    if(!user){
-      const user=new User({
-        username:'swetha',
-        email:'swetha@gmail.com',
-        cart:{
-          items:[]
-        }
-      });
-      user.save();
-    }
-  })
- 
-  app.listen(3000);
-}).catch(err=>{console.log(err)});
+  });
